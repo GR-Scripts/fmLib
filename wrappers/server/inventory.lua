@@ -39,6 +39,13 @@ end
 function FM.inventory.getMetaDataBySlot(inv, slot)
     if OXInv then return OXInv:GetSlot(inv, slot)?.metadata
     elseif COREInv then return COREInv:getItemBySlot(inv, slot)?.metadata
+    elseif QSInv then 
+        local PlayerInv = QSInv:GetInventory(inv)
+        for _, item in pairs(PlayerInv) do
+            if item.slot == slot then
+                return item.metadata
+            end
+        end
     elseif QBInv then return QBInv:GetItemBySlot(inv, slot)?.info end
 end
 
@@ -48,6 +55,13 @@ function FM.inventory.getSlotIDByItem(inv, itemName)
     if OXInv then return OXInv:GetSlotIdWithItem(inv, itemName)
     elseif QBInv then return QBInv:GetFirstSlotByItem(QB.Functions.GetPlayer(inv).PlayerData.Items, itemName)
     elseif COREInv then return COREInv:getFirstSlotByItem(inv, itemName)
+    elseif QSInv then 
+        local PlayerInv = QSInv:GetInventory(inv)
+        for _, item in pairs(PlayerInv) do
+            if item.name == itemName then
+                return item.slot
+            end
+        end
     elseif PSInv then return PSInv:GetFirstSlotByItem(FM.player.get(inv).getItems(), itemName) end
 end
 
@@ -57,6 +71,14 @@ end
 function FM.inventory.setMetaDataBySlot(inv, slot, metadata)
     if OXInv then OXInv:SetMetadata(inv, slot, metadata)
     elseif COREInv then COREInv:setMetadata(inv, slot, metadata)
+    elseif QSInv then
+        local PlayerInv = QSInv:GetInventory(inv)
+        for _, item in pairs(PlayerInv) do
+            if item.slot == slot then
+                item.metadata = metadata
+                break
+            end
+        end
     elseif QBInv then QBInv:SetMetaData(inv, slot, metadata) end
 end
 
